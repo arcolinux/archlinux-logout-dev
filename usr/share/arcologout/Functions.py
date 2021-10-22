@@ -119,7 +119,7 @@ def _get_logout():
 
     print("Your desktop is " + desktop)
     if desktop :
-        return "pkill -KILL -u $USER"
+        return "pkill -u $USER"
 
 
 def button_active(self, data, GdkPixbuf):
