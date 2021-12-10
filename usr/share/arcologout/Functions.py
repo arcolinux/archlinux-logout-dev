@@ -115,7 +115,15 @@ def get_config(self, Gdk, Gtk, config):
 def _get_logout():
     out = subprocess.run(["sh", "-c", "env | grep DESKTOP_SESSION"],
                          shell=False, stdout=subprocess.PIPE)
+
+    # in case display manager ly is active
+    status = os.system('systemctl is-active --quiet ly')
+    if status = 0:
+        out = subprocess.run(["sh", "-c", "env | grep XDG_CURRENT_DESKTOP"],
+                         shell=False, stdout=subprocess.PIPE)
+
     desktop = out.stdout.decode().split("=")[1].strip()
+    desktop = desktop.lower()
 
     print("Your desktop is " + desktop)
     if desktop in ("herbstluftwm", "/usr/share/xsessions/herbstluftwm"):
