@@ -113,17 +113,26 @@ def get_config(self, Gdk, Gtk, config):
 
 
 def _get_logout():
-    out = subprocess.run(["sh", "-c", "env | grep DESKTOP_SESSION"],
+    desktop = "unknown"
+    try:
+        out = subprocess.run(["sh", "-c", "env | grep DESKTOP_SESSION"],
                          shell=False, stdout=subprocess.PIPE)
+        desktop = out.stdout.decode().split("=")[1].strip()
+        desktop = desktop.lower()
+    except Exception as e:
+        desktop = "unknown"
 
     # in case display manager ly is active
+
     status = os.system('systemctl is-active --quiet ly')
     if status == 0:
-        out = subprocess.run(["sh", "-c", "env | grep XDG_CURRENT_DESKTOP"],
-                         shell=False, stdout=subprocess.PIPE)
-
-    desktop = out.stdout.decode().split("=")[1].strip()
-    desktop = desktop.lower()
+        try:
+            out = subprocess.run(["sh", "-c", "env | grep XDG_CURRENT_DESKTOP"],
+                             shell=False, stdout=subprocess.PIPE)
+            desktop = out.stdout.decode().split("=")[1].strip()
+            desktop = desktop.lower()
+        except Exception as e:
+            desktop = "unknown"
 
     print("Your desktop is " + desktop)
     if desktop in ("herbstluftwm", "/usr/share/xsessions/herbstluftwm"):
@@ -180,7 +189,7 @@ def _get_logout():
     elif desktop in ("gnome-classic", "/usr/share/xsessions/gnome-classic"):
         return "gnome-session-quit --logout --no-prompt"
     elif desktop :
-        return "pkill awesome | pkill bspwm | pkill qtile | pkill dwm | pkill dusk"
+        return "pkill awesome | pkill bspwm | pkill cwm |  pkill dwm | pkill dusk | pkill fvwm3 | pkill herbstclient | pkill i3 | pkill icewm | pkill jwm | pkill leftwm | pkill lxqt | pkill openbox | pkill qtile | pkill spectrwm | pkill wmderland | pkill xmonad |"
     return None
 
 def button_active(self, data, GdkPixbuf):
