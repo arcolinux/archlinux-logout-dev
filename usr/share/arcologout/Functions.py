@@ -118,7 +118,7 @@ def _get_logout():
 
     # in case display manager ly is active
     status = os.system('systemctl is-active --quiet ly')
-    if status = 0:
+    if status == 0:
         out = subprocess.run(["sh", "-c", "env | grep XDG_CURRENT_DESKTOP"],
                          shell=False, stdout=subprocess.PIPE)
 
