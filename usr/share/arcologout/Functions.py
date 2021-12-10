@@ -180,7 +180,7 @@ def _get_logout():
     elif desktop in ("gnome-classic", "/usr/share/xsessions/gnome-classic"):
         return "gnome-session-quit --logout --no-prompt"
     elif desktop :
-        return "pkill -KILL -u $USER"
+        return "pkill awesome | pkill bspwm | pkill qtile | pkill dwm | pkill dusk"
     return None
 
 def button_active(self, data, GdkPixbuf):
