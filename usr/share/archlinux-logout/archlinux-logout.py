@@ -25,7 +25,7 @@ class TransparentWindow(Gtk.Window):
     cmd_suspend = "systemctl suspend"
     cmd_hibernate = "systemctl hibernate"
     cmd_lock = 'betterlockscreen -l dim -- --time-str="%H:%M"'
-    wallpaper = "/usr/share/archlinux-betterlockscreen/wallpapers/arco-wallpaper.jpg"
+    wallpaper = "/usr/share/archlinux-betterlockscreen/wallpapers/wallpaper.jpg"
     d_buttons = ['cancel',
                  'shutdown',
                  'restart',
@@ -317,7 +317,7 @@ class TransparentWindow(Gtk.Window):
                     t.daemon = True
                     t.start()
                 else:
-                    self.lbl_stat.set_markup("<span size=\"x-large\"><b>Choose a wallpaper with arcolinux-betterlockscreen</b></span>")  # noqa
+                    self.lbl_stat.set_markup("<span size=\"x-large\"><b>Choose a wallpaper with archlinux-betterlockscreen</b></span>")  # noqa
                     self.Ec.set_sensitive(True)
                     self.active = False
             else:
@@ -382,4 +382,4 @@ if __name__ == "__main__":
         w.show_all()
         Gtk.main()
     else:
-        print("arcolinux-logout did not close properly. Remove /tmp/archlinux-logout.lock with sudo.")
+        print("ArchLinux-logout did not close properly. Remove /tmp/archlinux-logout.lock with sudo.")
