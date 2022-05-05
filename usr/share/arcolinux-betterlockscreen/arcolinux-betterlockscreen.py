@@ -17,12 +17,12 @@ from gi.repository import Gtk, GdkPixbuf, Gdk, GLib # noqa
 
 class Main(Gtk.Window):
     def __init__(self):
-        super(Main, self).__init__(title="ArcoLinux BetterLockScreen")
+        super(Main, self).__init__(title="ArchLinux BetterLockScreen")
         self.set_border_width(10)
         self.set_default_size(700, 460)
         self.connect("delete-event", self.close)
         self.set_icon_from_file(fn.os.path.join(
-            GUI.base_dir, 'images/arcolinux.svg'))
+            GUI.base_dir, 'images/archlinux.png'))
         self.set_position(Gtk.WindowPosition.CENTER)
 
         self.timeout_id = None
@@ -170,17 +170,17 @@ class Main(Gtk.Window):
             paths = fn.get_saved_path()
             if len(paths) < 1:
                 if len(text) < 1:
-                    paths = "/usr/share/backgrounds/arcolinux"
+                    paths = "/usr/share/arcolinux-betterlockscreen/wallpapers/"
                     if not fn.os.path.isdir(paths):
-                        paths = "/usr/share/backgrounds/arcolinux"
+                        paths = "/usr/share/arcolinux-betterlockscreen/wallpapers/"
                     if not fn.os.path.isdir(paths):
                         return 0
                 else:
                     paths = text
         else:
-            paths = "/usr/share/backgrounds/arcolinux"
+            paths = "/usr/share/arcolinux-betterlockscreen/wallpapers/"
             if not fn.os.path.isdir(paths):
-                paths = "/usr/share/backgrounds/arcolinux"
+                paths = "/usr/share/arcolinux-betterlockscreen/wallpapers/"
             if not fn.os.path.isdir(paths):
                 return 0
 
