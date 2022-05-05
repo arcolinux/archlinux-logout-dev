@@ -333,7 +333,7 @@ def GUI(self, Gtk, GdkPixbuf, working_dir, os, Gdk, fn):
     hbox8 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
 
     plbl = Gtk.Label()
-    plbl.set_markup("<span size=\"large\">You can change the lockscreen wallpaper\nwith <b>Arcolinux BetterLockScreen</b></span>")
+    plbl.set_markup("<span size=\"large\">You can change the lockscreen wallpaper\nwith <b>Archlinux BetterLockScreen</b></span>")
 
     hbox8.pack_end(plbl, False, False, 10)
 

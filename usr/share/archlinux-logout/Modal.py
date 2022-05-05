@@ -16,7 +16,7 @@ class ModalBox(Gtk.Window):
         self.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
         print(state)
         lbl = Gtk.Label() 
-        lbl.set_markup("<b>Arcolinux Betterlockscreen GUI</b> was not found on your system\nwould you like to install it?")
+        lbl.set_markup("<b>ArchLinux Betterlockscreen GUI</b> was not found on your system\nwould you like to install it?")
         self.add(lbl)
 
         if state is True:

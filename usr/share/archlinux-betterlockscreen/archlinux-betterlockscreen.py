@@ -70,7 +70,7 @@ class Main(Gtk.Window):
 
         GUI.GUI(self, Gtk, GdkPixbuf, Gdk, th, fn)
 
-        with open("/tmp/bls.lock", "w") as f:
+        with open("/tmp/archlinux-betterlock.lock", "w") as f:
             f.write("")
             f.close()
 
@@ -170,17 +170,17 @@ class Main(Gtk.Window):
             paths = fn.get_saved_path()
             if len(paths) < 1:
                 if len(text) < 1:
-                    paths = "/usr/share/arcolinux-betterlockscreen/wallpapers/"
+                    paths = "/usr/share/archlinux-betterlockscreen/wallpapers/"
                     if not fn.os.path.isdir(paths):
-                        paths = "/usr/share/arcolinux-betterlockscreen/wallpapers/"
+                        paths = "/usr/share/archlinux-betterlockscreen/wallpapers/"
                     if not fn.os.path.isdir(paths):
                         return 0
                 else:
                     paths = text
         else:
-            paths = "/usr/share/arcolinux-betterlockscreen/wallpapers/"
+            paths = "/usr/share/archlinux-betterlockscreen/wallpapers/"
             if not fn.os.path.isdir(paths):
-                paths = "/usr/share/arcolinux-betterlockscreen/wallpapers/"
+                paths = "/usr/share/archlinux-betterlockscreen/wallpapers/"
             if not fn.os.path.isdir(paths):
                 return 0
 
@@ -229,13 +229,13 @@ class Main(Gtk.Window):
         md.destroy()
 
     def close(self, widget, data):
-        fn.os.unlink("/tmp/bls.lock")
+        fn.os.unlink("/tmp/archlinux-betterlock.lock")
         Gtk.main_quit()
 
 
 if __name__ == "__main__":
-    if not fn.os.path.isfile("/tmp/bls.lock"):
-        with open("/tmp/bls.pid", "w") as f:
+    if not fn.os.path.isfile("/tmp/archlinux-betterlock.lock"):
+        with open("/tmp/archlinux-betterlock.pid", "w") as f:
             f.write(str(fn.os.getpid()))
             f.close()
         w = Main()
@@ -248,7 +248,7 @@ if __name__ == "__main__":
                                buttons=Gtk.ButtonsType.YES_NO,
                                text="Lock File Found")
         md.format_secondary_markup(
-            "The lock file has been found. This indicates there is already an instance of <b>ArcoLinux Betterlockscreen GUI</b> running.\n\
+            "The lock file has been found. This indicates there is already an instance of <b>ArchLinux Betterlockscreen GUI</b> running.\n\
 click yes to remove the lock file and try running again")  # noqa
 
         result = md.run()
@@ -256,7 +256,7 @@ click yes to remove the lock file and try running again")  # noqa
 
         if result in (Gtk.ResponseType.OK, Gtk.ResponseType.YES):
             pid = ""
-            with open("/tmp/bls.pid", "r") as f:
+            with open("/tmp/archlinux-betterlock.pid", "r") as f:
                 line = f.read()
                 pid = line.rstrip().lstrip()
                 f.close()
@@ -265,4 +265,4 @@ click yes to remove the lock file and try running again")  # noqa
                 fn.MessageBox(Main(), "Application Running!",
                                      "You first need to close the existing application")  # noqa
             else:
-                fn.os.unlink("/tmp/bls.lock")
+                fn.os.unlink("/tmp/archlinux-betterlock.lock")

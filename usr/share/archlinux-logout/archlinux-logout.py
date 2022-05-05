@@ -7,7 +7,7 @@ import cairo
 import gi
 import shutil
 import GUI
-import Modal
+#import Modal
 import Functions as fn
 import threading
 import signal
@@ -25,7 +25,7 @@ class TransparentWindow(Gtk.Window):
     cmd_suspend = "systemctl suspend"
     cmd_hibernate = "systemctl hibernate"
     cmd_lock = 'betterlockscreen -l dim -- --time-str="%H:%M"'
-    wallpaper = "/usr/share/arcologout/wallpaper.jpg"
+    wallpaper = "/usr/share/archlinux-betterlockscreen/wallpapers/arco-wallpaper.jpg"
     d_buttons = ['cancel',
                  'shutdown',
                  'restart',
@@ -50,7 +50,7 @@ class TransparentWindow(Gtk.Window):
     opacity = 0.8
 
     def __init__(self):
-        super(TransparentWindow, self).__init__(type=Gtk.WindowType.TOPLEVEL, title="Arcolinux Logout")
+        super(TransparentWindow, self).__init__(type=Gtk.WindowType.TOPLEVEL, title="ArchLinux Logout")
         # Gtk.Window.__init__(self, type=Gtk.WindowType.TOPLEVEL)
         # self.set_type_hint(Gdk.WindowTypeHint.DOCK)
         self.set_keep_above(True)
@@ -65,11 +65,11 @@ class TransparentWindow(Gtk.Window):
 
         # self.monitor = 0
 
-        if not fn.os.path.isdir(fn.home + "/.config/arcologout"):
-            fn.os.mkdir(fn.home + "/.config/arcologout")
+        if not fn.os.path.isdir(fn.home + "/.config/archlinux-logout"):
+            fn.os.mkdir(fn.home + "/.config/archlinux-logout")
 
-        if not fn.os.path.isfile(fn.home + "/.config/arcologout/arcologout.conf"):
-            shutil.copy(fn.root_config, fn.home + "/.config/arcologout/arcologout.conf")
+        if not fn.os.path.isfile(fn.home + "/.config/archlinux-logout/archlinux-logout.conf"):
+            shutil.copy(fn.root_config, fn.home + "/.config/archlinux-logout/archlinux-logout.conf")
 
         # s = Gdk.Screen.get_default()
         # self.width = s.width()
@@ -109,15 +109,15 @@ class TransparentWindow(Gtk.Window):
         self.present()
 
         GUI.GUI(self, Gtk, GdkPixbuf, fn.working_dir, fn.os, Gdk, fn)
-        if not fn.os.path.isfile("/tmp/arcologout.lock"):
-            with open("/tmp/arcologout.lock", "w") as f:
+        if not fn.os.path.isfile("/tmp/archlinux-logout.lock"):
+            with open("/tmp/archlinux-logout.lock", "w") as f:
                 f.write("")
 
 
     def on_save_clicked(self, widget):
 
         try:
-            with open(fn.home + "/.config/arcologout/arcologout.conf", "r") as f:
+            with open(fn.home + "/.config/archlinux-logout/archlinux-logout.conf", "r") as f:
                 lines = f.readlines()
                 f.close()
 
@@ -131,15 +131,15 @@ class TransparentWindow(Gtk.Window):
             lines[pos_theme] = "theme=" + self.themes.get_active_text() + "\n"
             lines[pos_font] = "font_size=" + str(int(self.fonts.get_value())) + "\n"
 
-            with open(fn.home + "/.config/arcologout/arcologout.conf", "w") as f:
+            with open(fn.home + "/.config/archlinux-logout/archlinux-logout.conf", "w") as f:
                 f.writelines(lines)
                 f.close()
             self.popover.popdown()
         except Exception as e:
-            fn.os.unlink(fn.home + "/.config/arcologout/arcologout.conf")
-            if not fn.os.path.isfile(fn.home + "/.config/arcologout/arcologout.conf"):
-                shutil.copy(fn.root_config, fn.home + "/.config/arcologout/arcologout.conf")
-            with open(fn.home + "/.config/arcologout/arcologout.conf", "r") as f:
+            fn.os.unlink(fn.home + "/.config/archlinux-logout/archlinux-logout.conf")
+            if not fn.os.path.isfile(fn.home + "/.config/archlinux-logout/archlinux-logout.conf"):
+                shutil.copy(fn.root_config, fn.home + "/.config/archlinux-logout/archlinux-logout.conf")
+            with open(fn.home + "/.config/archlinux-logout/archlinux-logout.conf", "r") as f:
                 lines = f.readlines()
                 f.close()
 
@@ -153,7 +153,7 @@ class TransparentWindow(Gtk.Window):
             lines[pos_theme] = "theme=" + self.themes.get_active_text() + "\n"
             lines[pos_font] = "font_size=" + str(int(self.fonts.get_value())) + "\n"
 
-            with open(fn.home + "/.config/arcologout/arcologout.conf", "w") as f:
+            with open(fn.home + "/.config/archlinux-logout/archlinux-logout.conf", "w") as f:
                 f.writelines(lines)
                 f.close()
             self.popover.popdown()
@@ -279,32 +279,32 @@ class TransparentWindow(Gtk.Window):
 
         if (data == self.binds.get('logout')):
             command = fn._get_logout()
-            fn.os.unlink("/tmp/arcologout.lock")
-            fn.os.unlink("/tmp/arcologout.pid")
+            fn.os.unlink("/tmp/archlinux-logout.lock")
+            fn.os.unlink("/tmp/archlinux-logout.pid")
             self.__exec_cmd(command)
             Gtk.main_quit()
 
         elif (data == self.binds.get('restart')):
-            fn.os.unlink("/tmp/arcologout.lock")
-            fn.os.unlink("/tmp/arcologout.pid")
+            fn.os.unlink("/tmp/archlinux-logout.lock")
+            fn.os.unlink("/tmp/archlinux-logout.pid")
             self.__exec_cmd(self.cmd_restart)
             Gtk.main_quit()
 
         elif (data == self.binds.get('shutdown')):
-            fn.os.unlink("/tmp/arcologout.lock")
-            fn.os.unlink("/tmp/arcologout.pid")
+            fn.os.unlink("/tmp/archlinux-logout.lock")
+            fn.os.unlink("/tmp/archlinux-logout.pid")
             self.__exec_cmd(self.cmd_shutdown)
             Gtk.main_quit()
 
         elif (data == self.binds.get('suspend')):
-            fn.os.unlink("/tmp/arcologout.lock")
-            fn.os.unlink("/tmp/arcologout.pid")
+            fn.os.unlink("/tmp/archlinux-logout.lock")
+            fn.os.unlink("/tmp/archlinux-logout.pid")
             self.__exec_cmd(self.cmd_suspend)
             Gtk.main_quit()
 
         elif (data == self.binds.get('hibernate')):
-            fn.os.unlink("/tmp/arcologout.lock")
-            fn.os.unlink("/tmp/arcologout.pid")
+            fn.os.unlink("/tmp/archlinux-logout.lock")
+            fn.os.unlink("/tmp/archlinux-logout.pid")
             self.__exec_cmd(self.cmd_hibernate)
             Gtk.main_quit()
 
@@ -321,7 +321,7 @@ class TransparentWindow(Gtk.Window):
                     self.Ec.set_sensitive(True)
                     self.active = False
             else:
-                fn.os.unlink("/tmp/arcologout.lock")
+                fn.os.unlink("/tmp/archlinux-logout.lock")
                 self.__exec_cmd(self.cmd_lock)
                 Gtk.main_quit()
         elif (data == self.binds.get('settings')):
@@ -334,19 +334,19 @@ class TransparentWindow(Gtk.Window):
             self.popover2.show_all()
             self.popover2.popup()
         else:
-            fn.os.unlink("/tmp/arcologout.lock")
-            fn.os.unlink("/tmp/arcologout.pid")
+            fn.os.unlink("/tmp/archlinux-logout.lock")
+            fn.os.unlink("/tmp/archlinux-logout.pid")
             Gtk.main_quit()
 
-    def modal_close(self, widget, signal):
-        print(self.state)
+    #def modal_close(self, widget, signal):
+    #    print(self.state)
 
     def __exec_cmd(self, cmdline):
         fn.os.system(cmdline)
 
     def on_close(self, widget, data):
-        fn.os.unlink("/tmp/arcologout.lock")
-        fn.os.unlink("/tmp/arcologout.pid")
+        fn.os.unlink("/tmp/archlinux-logout.lock")
+        fn.os.unlink("/tmp/archlinux-logout.pid")
         Gtk.main_quit()
 
     def message_box(self, message, title):
@@ -366,20 +366,20 @@ class TransparentWindow(Gtk.Window):
 
 
 def signal_handler(sig, frame):
-    print('\narcologout is Closing.')
-    fn.os.unlink("/tmp/arcologout.lock")
-    fn.os.unlink("/tmp/arcologout.pid")
+    print('\nArchLinux-Logout is Closing.')
+    fn.os.unlink("/tmp/archlinux-logout.lock")
+    fn.os.unlink("/tmp/archlinux-logout.pid")
     Gtk.main_quit(0)
 
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
-    if not fn.os.path.isfile("/tmp/arcologout.lock"):
-        with open("/tmp/arcologout.pid", "w") as f:
+    if not fn.os.path.isfile("/tmp/archlinux-logout.lock"):
+        with open("/tmp/archlinux-logout.pid", "w") as f:
             f.write(str(fn.os.getpid()))
             f.close()
         w = TransparentWindow()
         w.show_all()
         Gtk.main()
     else:
-        print("arcolinux-logout did not close properly. Remove /tmp/arcologout.lock with sudo.")
+        print("arcolinux-logout did not close properly. Remove /tmp/archlinux-logout.lock with sudo.")

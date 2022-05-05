@@ -13,13 +13,13 @@ import configparser
 home = os.path.expanduser("~")
 base_dir = os.path.dirname(os.path.realpath(__file__))
 # here = Path(__file__).resolve()
-working_dir = ''.join([str(Path(__file__).parents[2]), "/share/arcologout-themes/"])
-# config = "/etc/arcologout.conf"
-if os.path.isfile(home + "/.config/arcologout/arcologout.conf"):
-    config = home + "/.config/arcologout/arcologout.conf"
+working_dir = ''.join([str(Path(__file__).parents[2]), "/share/archlinux-logout-themes/"])
+# config = "/etc/archlinux-logout.conf"
+if os.path.isfile(home + "/.config/archlinux-logout/archlinux-logout.conf"):
+    config = home + "/.config/archlinux-logout/archlinux-logout.conf"
 else:
-    config = ''.join([str(Path(__file__).parents[3]), "/etc/arcologout.conf"])
-root_config = ''.join([str(Path(__file__).parents[3]), "/etc/arcologout.conf"])
+    config = ''.join([str(Path(__file__).parents[3]), "/etc/archlinux-logout.conf"])
+root_config = ''.join([str(Path(__file__).parents[3]), "/etc/archlinux-logout.conf"])
 
 def _get_position(lists, value):
     data = [string for string in lists if value in string]
@@ -43,7 +43,7 @@ def cache_bl(self, GLib, Gtk):
                 GLib.idle_add(self.lbl_stat.set_markup, "<span size=\"x-large\"><b>" + line.decode() + "</b></span>")
 
         GLib.idle_add(self.lbl_stat.set_text, "")
-        os.unlink("/tmp/arcologout.lock")
+        os.unlink("/tmp/archlinux-logout.lock")
         os.system(self.cmd_lock)
         Gtk.main_quit()
     else:
@@ -108,9 +108,9 @@ def get_config(self, Gdk, Gtk, config):
             )
     except Exception as e:
         print(e)
-        os.unlink(home + "/.config/arcologout/arcologout.conf")
-        if not os.path.isfile(home + "/.config/arcologout/arcologout.conf"):
-            shutil.copy(root_config, home + "/.config/arcologout/arcologout.conf")
+        os.unlink(home + "/.config/archlinux-logout/archlinux-logout.conf")
+        if not os.path.isfile(home + "/.config/archlinux-logout/archlinux-logout.conf"):
+            shutil.copy(root_config, home + "/.config/archlinux-logout/archlinux-logout.conf")
 
 
 def _get_logout():

@@ -13,7 +13,7 @@ from gi.repository import GLib, Gtk  # noqa
 
 home = expanduser("~")
 base_dir = os.path.dirname(os.path.realpath(__file__))
-config = home + "/.config/arcolinux-betterlockscreen/"
+config = home + "/.config/archlinux-betterlockscreen/"
 settings = "settings.conf"
 resolutions = [
     "640x360",

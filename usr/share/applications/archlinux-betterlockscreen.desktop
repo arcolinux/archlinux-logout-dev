@@ -1,9 +1,9 @@
 [Desktop Entry]
-Name=ArcoLinux Betterlockscreen
+Name=ArchLinux Betterlockscreen
 GenericName=Betterlockscreen
 X-GNOME-FullName=Betterlockscreen
 Comment=Change the image for the lockscreen
-Exec=/usr/local/bin/arcolinux-betterlockscreen
+Exec=/usr/local/bin/archlinux-betterlockscreen
 Icon=betterlockscreen
 Terminal=false
 Type=Application
