@@ -7,7 +7,6 @@ import cairo
 import gi
 import shutil
 import GUI
-#import Modal
 import Functions as fn
 import threading
 import signal
@@ -337,9 +336,6 @@ class TransparentWindow(Gtk.Window):
             fn.os.unlink("/tmp/archlinux-logout.lock")
             fn.os.unlink("/tmp/archlinux-logout.pid")
             Gtk.main_quit()
-
-    #def modal_close(self, widget, signal):
-    #    print(self.state)
 
     def __exec_cmd(self, cmdline):
         fn.os.system(cmdline)
