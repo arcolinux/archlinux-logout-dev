@@ -194,6 +194,8 @@ def _get_logout():
         return "pkill stumpwm"
     elif desktop in ("leftwm", "/usr/share/xsessions/leftwm"):
         return "pkill leftwm"
+    elif desktop in ("Hypr", "/usr/share/xsessions/hypr"):
+        return "pkill Hypr"
     elif desktop in ("dusk", "/usr/share/xsessions/dusk"):
         return "pkill dusk"
     elif desktop in ("wmderland", "/usr/share/xsessions/wmderland"):
