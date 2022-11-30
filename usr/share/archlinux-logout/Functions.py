@@ -10,7 +10,14 @@ from pathlib import Path
 import configparser
 #import distro
 
+envvar = os.environ
+print(envvar)
+sessionw = False
+if "wayland" in envvar:
+    sessionw == True
+print(sessionw)
 home = os.path.expanduser("~")
+
 base_dir = os.path.dirname(os.path.realpath(__file__))
 # here = Path(__file__).resolve()
 working_dir = ''.join([str(Path(__file__).parents[2]), "/share/archlinux-logout-themes/"])
