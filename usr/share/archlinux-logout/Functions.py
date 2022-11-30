@@ -11,11 +11,12 @@ import configparser
 #import distro
 
 envvar = os.environ
-print(envvar)
 sessionw = False
-if "wayland" in envvar:
-    sessionw == True
-print(sessionw)
+for s in envvar:
+    if "wayland" in s:
+        sessionw == True
+    print(sessionw)
+
 home = os.path.expanduser("~")
 
 base_dir = os.path.dirname(os.path.realpath(__file__))
