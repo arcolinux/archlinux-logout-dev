@@ -10,12 +10,10 @@ from pathlib import Path
 import configparser
 #import distro
 
-envvar = os.environ
+envvar = os.environ['XDG_SESSION_TYPE']
 sessionw = False
-for s in envvar:
-    if "wayland" in s:
-        sessionw == True
-    print(sessionw)
+if envvar == "wayland":
+    sessionw = True
 
 home = os.path.expanduser("~")
 
