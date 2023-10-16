@@ -64,10 +64,11 @@ class TransparentWindow(Gtk.Window):
     def __init__(self):
         super(TransparentWindow, self).__init__(type=Gtk.WindowType.TOPLEVEL, title="ArchLinux Logout")
         # Gtk.Window.__init__(self, type=Gtk.WindowType.TOPLEVEL)
-        # self.set_type_hint(Gdk.WindowTypeHint.DOCK)
+        # on qtile this setting allows the logout widget overlay to go above the bar
+        self.set_type_hint(Gdk.WindowTypeHint.DOCK)
         self.set_keep_above(True)
         self.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
-        self.set_size_request(1200, 300)
+        #self.set_size_request(1200, 300)
         self.connect('delete-event', self.on_close)
         self.connect('destroy', self.on_close)
         self.connect('draw', self.draw)
@@ -97,6 +98,18 @@ class TransparentWindow(Gtk.Window):
         #     self.width += rec.width
 
         screen = self.get_screen()
+
+        display = Gdk.Display.get_default()
+        # get all monitors
+        monitors = display.get_n_monitors()
+
+        # loop through monitors, get resolution and set_size_request using the width, height dimensions
+
+        for i in range(monitors):
+            monitor = display.get_monitor(i)
+            geometry = monitor.get_geometry()
+            print(f"[INFO] Monitor width = {geometry.width}, height = {geometry.height}")
+            self.set_size_request(geometry.width, geometry.height)
 
         # monitor = screens.get_monitor(0)
         # rect = monitor.get_geometry()
