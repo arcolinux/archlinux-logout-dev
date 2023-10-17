@@ -68,8 +68,7 @@ class TransparentWindow(Gtk.Window):
             type=Gtk.WindowType.TOPLEVEL, title="ArchLinux Logout"
         )
         # Gtk.Window.__init__(self, type=Gtk.WindowType.TOPLEVEL)
-        # on qtile this setting allows the logout widget overlay to go above the bar
-        self.set_type_hint(Gdk.WindowTypeHint.DOCK)
+        # self.set_type_hint(Gdk.WindowTypeHint.DOCK)
         self.set_keep_above(True)
         self.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
         # self.set_size_request(1200, 300)
