@@ -118,6 +118,7 @@ class TransparentWindow(Gtk.Window):
             geometry = monitor.get_geometry()
             print(f"[INFO] Setting Monitor {i}: {geometry.width}x{geometry.height}")
             self.set_size_request(geometry.width, geometry.height)
+            self.fullscreen_on_monitor(screen,i)
 
         # monitor = screens.get_monitor(0)
         # rect = monitor.get_geometry()
@@ -137,7 +138,7 @@ class TransparentWindow(Gtk.Window):
         if self.buttons is None or self.buttons == [""]:
             self.buttons = self.d_buttons
 
-        self.fullscreen()
+        #self.fullscreen()
         self.set_app_paintable(True)
         self.present()
 
