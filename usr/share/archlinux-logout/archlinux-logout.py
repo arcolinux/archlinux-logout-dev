@@ -109,16 +109,16 @@ class TransparentWindow(Gtk.Window):
 
         display = Gdk.Display.get_default()
         # get all monitors
-        monitors = display.get_n_monitors()
+        self.monitors = fn.get_monitors(display)
 
         # loop through monitors, get resolution and set_size_request using the width, height dimensions
-        print(f"[INFO] Monitors = {monitors}")
-        for i in range(monitors):
-            monitor = display.get_monitor(i)
-            geometry = monitor.get_geometry()
-            print(f"[INFO] Setting Monitor {i}: {geometry.width}x{geometry.height}")
-            self.set_size_request(geometry.width, geometry.height)
-            self.fullscreen_on_monitor(screen,i)
+        print(f"[INFO] Available Monitors = {self.monitors}")
+
+        # monitor = display.get_monitor(0)
+        # geometry = monitor.get_geometry()
+        # print(f"[INFO] Setting Monitor: {geometry.width}x{geometry.height}")
+        # self.set_size_request(geometry.width, geometry.height)
+        # self.fullscreen_on_monitor(screen, 0)
 
         # monitor = screens.get_monitor(0)
         # rect = monitor.get_geometry()
@@ -135,10 +135,37 @@ class TransparentWindow(Gtk.Window):
 
         fn.get_config(self, Gdk, Gtk, fn.config)
 
+        # check monitor value stored in the config file is still valid
+        # scenario: a connected monitor previously saved in the config may no longer be attached
+
+        if self.show_on_monitor == "first":
+            print("[INFO] Showing on first monitor")
+            monitor = display.get_monitor(0)
+            geometry = monitor.get_geometry()
+            print(f"[INFO] Setting Monitor: {geometry.width}x{geometry.height}")
+            self.set_size_request(geometry.width, geometry.height)
+            self.fullscreen_on_monitor(screen, 0)
+        elif self.show_on_monitor == "last" and self.monitors > 1:
+            # make sure the number of monitors is greater than 1 to show on last monitor
+            print("[INFO] Showing on last monitor")
+            for i in range(self.monitors):
+                monitor = display.get_monitor(i)
+                geometry = monitor.get_geometry()
+                print(f"[INFO] Setting Monitor: {geometry.width}x{geometry.height}")
+                self.set_size_request(geometry.width, geometry.height)
+                self.fullscreen_on_monitor(screen, i)
+        else:
+            # default show on first monitor
+            print("[INFO] Default action, showing on first monitor")
+            monitor = display.get_monitor(0)
+            geometry = monitor.get_geometry()
+            print(f"[INFO] Setting Monitor: {geometry.width}x{geometry.height}")
+            self.set_size_request(geometry.width, geometry.height)
+            self.fullscreen_on_monitor(screen, 0)
+
         if self.buttons is None or self.buttons == [""]:
             self.buttons = self.d_buttons
 
-        #self.fullscreen()
         self.set_app_paintable(True)
         self.present()
 
@@ -159,11 +186,21 @@ class TransparentWindow(Gtk.Window):
             pos_size = fn._get_position(lines, "icon_size")
             pos_theme = fn._get_position(lines, "theme=")
             pos_font = fn._get_position(lines, "font_size=")
+            pos_monitor = fn._get_position(lines, "show_on_monitor=")
 
             lines[pos_opacity] = "opacity=" + str(int(self.hscale.get_value())) + "\n"
             lines[pos_size] = "icon_size=" + str(int(self.icons.get_value())) + "\n"
             lines[pos_theme] = "theme=" + self.themes.get_active_text() + "\n"
             lines[pos_font] = "font_size=" + str(int(self.fonts.get_value())) + "\n"
+
+            if self.monitors > 1:
+                if self.rb_monitor_first.get_active():
+                    lines[pos_monitor] = "show_on_monitor=first\n"
+                if self.rb_monitor_last.get_active():
+                    lines[pos_monitor] = "show_on_monitor=last\n"
+
+            if self.monitors == 1:
+                lines[pos_monitor] = "show_on_monitor=first\n"
 
             with open(
                 fn.home + "/.config/archlinux-logout/archlinux-logout.conf", "w"
@@ -190,11 +227,21 @@ class TransparentWindow(Gtk.Window):
             pos_size = fn._get_position(lines, "icon_size")
             pos_theme = fn._get_position(lines, "theme=")
             pos_font = fn._get_position(lines, "font_size=")
+            pos_monitor = fn._get_position(lines, "show_on_monitor=")
 
             lines[pos_opacity] = "opacity=" + str(int(self.hscale.get_value())) + "\n"
             lines[pos_size] = "icon_size=" + str(int(self.icons.get_value())) + "\n"
             lines[pos_theme] = "theme=" + self.themes.get_active_text() + "\n"
             lines[pos_font] = "font_size=" + str(int(self.fonts.get_value())) + "\n"
+
+            if self.monitors > 1:
+                if self.rb_monitor_first.get_active():
+                    lines[pos_monitor] = "show_on_monitor=first\n"
+
+                if self.rb_monitor_last.get_active():
+                    lines[pos_monitor] = "show_on_monitor=last\n"
+            else:
+                lines[pos_monitor] = "show_on_monitor=first\n"
 
             with open(
                 fn.home + "/.config/archlinux-logout/archlinux-logout.conf", "w"
