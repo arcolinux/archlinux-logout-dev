@@ -111,23 +111,7 @@ class TransparentWindow(Gtk.Window):
         # get all monitors
         self.monitors = fn.get_monitors(display)
 
-        # loop through monitors, get resolution and set_size_request using the width, height dimensions
         print(f"[INFO] Available Monitors = {self.monitors}")
-
-        # monitor = display.get_monitor(0)
-        # geometry = monitor.get_geometry()
-        # print(f"[INFO] Setting Monitor: {geometry.width}x{geometry.height}")
-        # self.set_size_request(geometry.width, geometry.height)
-        # self.fullscreen_on_monitor(screen, 0)
-
-        # monitor = screens.get_monitor(0)
-        # rect = monitor.get_geometry()
-
-        # self.single_width = rect.width
-        # height = rect.height
-
-        # self.move(0, 0)
-        # self.resize(self.width, height)
 
         visual = screen.get_rgba_visual()
         if visual and screen.is_composited():
@@ -135,33 +119,7 @@ class TransparentWindow(Gtk.Window):
 
         fn.get_config(self, Gdk, Gtk, fn.config)
 
-        # check monitor value stored in the config file is still valid
-        # scenario: a connected monitor previously saved in the config may no longer be attached
-
-        if self.show_on_monitor == "first":
-            print("[INFO] Showing on first monitor")
-            monitor = display.get_monitor(0)
-            geometry = monitor.get_geometry()
-            print(f"[INFO] Setting Monitor: {geometry.width}x{geometry.height}")
-            self.set_size_request(geometry.width, geometry.height)
-            self.fullscreen_on_monitor(screen, 0)
-        elif self.show_on_monitor == "last" and self.monitors > 1:
-            # make sure the number of monitors is greater than 1 to show on last monitor
-            print("[INFO] Showing on last monitor")
-            for i in range(self.monitors):
-                monitor = display.get_monitor(i)
-                geometry = monitor.get_geometry()
-                print(f"[INFO] Setting Monitor: {geometry.width}x{geometry.height}")
-                self.set_size_request(geometry.width, geometry.height)
-                self.fullscreen_on_monitor(screen, i)
-        else:
-            # default show on first monitor
-            print("[INFO] Default action, showing on first monitor")
-            monitor = display.get_monitor(0)
-            geometry = monitor.get_geometry()
-            print(f"[INFO] Setting Monitor: {geometry.width}x{geometry.height}")
-            self.set_size_request(geometry.width, geometry.height)
-            self.fullscreen_on_monitor(screen, 0)
+        self.display_on_monitor(display, screen)
 
         if self.buttons is None or self.buttons == [""]:
             self.buttons = self.d_buttons
@@ -173,6 +131,33 @@ class TransparentWindow(Gtk.Window):
         if not fn.os.path.isfile("/tmp/archlinux-logout.lock"):
             with open("/tmp/archlinux-logout.lock", "w") as f:
                 f.write("")
+
+    def display_on_monitor(self, display, screen):
+        if self.show_on_monitor == "first":
+            monitor = display.get_monitor(0)
+            geometry = monitor.get_geometry()
+            print("[INFO] Showing on first monitor")
+            print(f"[INFO] Dimension = {geometry.width}x{geometry.height}")
+            self.set_size_request(geometry.width, geometry.height)
+            self.fullscreen_on_monitor(screen, 0)
+        elif self.show_on_monitor == "last" and self.monitors > 1:
+            # make sure the number of monitors is greater than 1 to show on last monitor
+            print("[INFO] Showing on last monitor")
+            # loop through monitors, get resolution and set_size_request using the width, height dimensions
+            for i in range(self.monitors):
+                monitor = display.get_monitor(i)
+                geometry = monitor.get_geometry()
+                print(f"[INFO] Monitor dimension = {geometry.width}x{geometry.height}")
+                self.set_size_request(geometry.width, geometry.height)
+                self.fullscreen_on_monitor(screen, i)
+        else:
+            # default show on first monitor
+            monitor = display.get_monitor(0)
+            geometry = monitor.get_geometry()
+            print("[INFO] Showing on first monitor")
+            print(f"[INFO] Dimension = {geometry.width}x{geometry.height}")
+            self.set_size_request(geometry.width, geometry.height)
+            self.fullscreen_on_monitor(screen, 0)
 
     def on_save_clicked(self, widget):
         try:
