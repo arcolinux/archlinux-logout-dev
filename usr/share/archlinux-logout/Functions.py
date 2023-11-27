@@ -353,8 +353,3 @@ def file_check(file):
 # def get_distro(self):
 # print(distro.id())
 #    return(distro.id())
-
-
-# get number of monitors
-def get_monitors(display):
-    return display.get_n_monitors()

@@ -79,8 +79,6 @@ class TransparentWindow(Gtk.Window):
         self.connect("window-state-event", self.on_window_state_event)
         self.set_decorated(False)
 
-        # self.monitor = 0
-
         if not fn.os.path.isdir(fn.home + "/.config/archlinux-logout"):
             fn.os.mkdir(fn.home + "/.config/archlinux-logout")
 
@@ -92,34 +90,22 @@ class TransparentWindow(Gtk.Window):
                 fn.home + "/.config/archlinux-logout/archlinux-logout.conf",
             )
 
-        # s = Gdk.Screen.get_default()
-        # self.width = s.width()
-        # height = s.height()
-
-        # screens = Gdk.Display.get_default()
-        # s = screens.get_n_monitors()
-
         self.width = 0
-        # for x in range(s):
-        #     sc = screens.get_monitor(x)
-        #     rec = sc.get_geometry()
-        #     self.width += rec.width
+        self.screen = self.get_screen()
 
-        screen = self.get_screen()
+        self.display = Gdk.Display.get_default()
 
-        display = Gdk.Display.get_default()
-        # get all monitors
-        self.monitors = fn.get_monitors(display)
+        seat = self.display.get_default_seat()
 
-        print(f"[INFO] Available Monitors = {self.monitors}")
+        self.pointer = Gdk.Seat.get_pointer(seat)
 
-        visual = screen.get_rgba_visual()
-        if visual and screen.is_composited():
+        visual = self.screen.get_rgba_visual()
+        if visual and self.screen.is_composited():
             self.set_visual(visual)
 
         fn.get_config(self, Gdk, Gtk, fn.config)
 
-        self.display_on_monitor(display, screen)
+        self.display_on_monitor()
 
         if self.buttons is None or self.buttons == [""]:
             self.buttons = self.d_buttons
@@ -132,32 +118,71 @@ class TransparentWindow(Gtk.Window):
             with open("/tmp/archlinux-logout.lock", "w") as f:
                 f.write("")
 
-    def display_on_monitor(self, display, screen):
-        if self.show_on_monitor == "first":
-            monitor = display.get_monitor(0)
-            geometry = monitor.get_geometry()
-            print("[INFO] Showing on first monitor")
-            print(f"[INFO] Dimension = {geometry.width}x{geometry.height}")
-            self.set_size_request(geometry.width, geometry.height)
-            self.fullscreen_on_monitor(screen, 0)
-        elif self.show_on_monitor == "last" and self.monitors > 1:
-            # make sure the number of monitors is greater than 1 to show on last monitor
-            print("[INFO] Showing on last monitor")
-            # loop through monitors, get resolution and set_size_request using the width, height dimensions
-            for i in range(self.monitors):
-                monitor = display.get_monitor(i)
-                geometry = monitor.get_geometry()
-                print(f"[INFO] Monitor dimension = {geometry.width}x{geometry.height}")
-                self.set_size_request(geometry.width, geometry.height)
-                self.fullscreen_on_monitor(screen, i)
-        else:
-            # default show on first monitor
-            monitor = display.get_monitor(0)
-            geometry = monitor.get_geometry()
-            print("[INFO] Showing on first monitor")
-            print(f"[INFO] Dimension = {geometry.width}x{geometry.height}")
-            self.set_size_request(geometry.width, geometry.height)
-            self.fullscreen_on_monitor(screen, 0)
+    def display_on_monitor(self):
+        print("#### Archlinux Logout ####")
+        try:
+            # test to see this device is a mouse
+            if self.pointer.get_has_cursor():
+                screen = None
+                x = 0
+                y = 0
+                display = None
+
+                session_type = os.environ.get("XDG_SESSION_TYPE")
+
+                if session_type == "wayland":
+                    print(
+                        "[WARN]: Session type = wayland, mouse position can't be tracked"
+                    )
+                elif session_type == "x11":
+                    print("[DEBUG]: Session type = x11")
+
+                # get the screen, x, y coordinates
+                screen, x, y = self.pointer.get_position()
+
+                # X11 compatibility only
+                # Wayland does not allow you to get the x,y coordinates
+                # defaults to showing on first monitor
+
+                if screen is not None and x != 0 and y != 0:
+                    print(f"[DEBUG]: Mouse position x={x} y={y}")
+
+                    # Returns the GdkDisplay to which device is connected
+                    display = self.pointer.get_display()
+
+                    if display is not None:
+                        # use the mouse cursor x,y coordinates
+                        monitor = display.get_monitor_at_point(x, y)
+                        print(
+                            f"[DEBUG]: Monitor: Primary={monitor.is_primary()}, Height={monitor.get_height_mm()}, Width={monitor.get_width_mm()}"
+                        )
+                        geometry = monitor.get_geometry()
+                        print(
+                            f"[DEBUG]: Monitor: Dimension={geometry.width}x{geometry.height}"
+                        )
+                        self.set_size_request(geometry.width, geometry.height)
+                        # move the window using the mouse pointer x,y coordinates
+                        self.move(x, y)
+                        self.fullscreen()
+                else:
+                    # default show on first monitor
+                    self.display_on_default()
+
+            else:
+                # default show on first monitor
+                self.display_on_default()
+        except Exception as e:
+            print(f"[ERROR]: Exception in display_on_monitor(): {e}")
+
+    # fallback should only be used if the mouse position can't be captured such as when on wayland
+    def display_on_default(self):
+        # default show on first monitor
+        monitor = self.display.get_monitor(0)
+        geometry = monitor.get_geometry()
+        print("[DEBUG]: Showing on first monitor")
+        print(f"[DEBUG]: Dimension: {geometry.width}x{geometry.height}")
+        self.set_size_request(geometry.width, geometry.height)
+        self.fullscreen_on_monitor(self.screen, 0)
 
     def on_save_clicked(self, widget):
         try:
@@ -171,21 +196,11 @@ class TransparentWindow(Gtk.Window):
             pos_size = fn._get_position(lines, "icon_size")
             pos_theme = fn._get_position(lines, "theme=")
             pos_font = fn._get_position(lines, "font_size=")
-            pos_monitor = fn._get_position(lines, "show_on_monitor=")
 
             lines[pos_opacity] = "opacity=" + str(int(self.hscale.get_value())) + "\n"
             lines[pos_size] = "icon_size=" + str(int(self.icons.get_value())) + "\n"
             lines[pos_theme] = "theme=" + self.themes.get_active_text() + "\n"
             lines[pos_font] = "font_size=" + str(int(self.fonts.get_value())) + "\n"
-
-            if self.monitors > 1:
-                if self.rb_monitor_first.get_active():
-                    lines[pos_monitor] = "show_on_monitor=first\n"
-                if self.rb_monitor_last.get_active():
-                    lines[pos_monitor] = "show_on_monitor=last\n"
-
-            if self.monitors == 1:
-                lines[pos_monitor] = "show_on_monitor=first\n"
 
             with open(
                 fn.home + "/.config/archlinux-logout/archlinux-logout.conf", "w"
@@ -212,21 +227,11 @@ class TransparentWindow(Gtk.Window):
             pos_size = fn._get_position(lines, "icon_size")
             pos_theme = fn._get_position(lines, "theme=")
             pos_font = fn._get_position(lines, "font_size=")
-            pos_monitor = fn._get_position(lines, "show_on_monitor=")
 
             lines[pos_opacity] = "opacity=" + str(int(self.hscale.get_value())) + "\n"
             lines[pos_size] = "icon_size=" + str(int(self.icons.get_value())) + "\n"
             lines[pos_theme] = "theme=" + self.themes.get_active_text() + "\n"
             lines[pos_font] = "font_size=" + str(int(self.fonts.get_value())) + "\n"
-
-            if self.monitors > 1:
-                if self.rb_monitor_first.get_active():
-                    lines[pos_monitor] = "show_on_monitor=first\n"
-
-                if self.rb_monitor_last.get_active():
-                    lines[pos_monitor] = "show_on_monitor=last\n"
-            else:
-                lines[pos_monitor] = "show_on_monitor=first\n"
 
             with open(
                 fn.home + "/.config/archlinux-logout/archlinux-logout.conf", "w"
