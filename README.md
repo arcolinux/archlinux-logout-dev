@@ -15,5 +15,6 @@ Additional configuration provided includes:
 - Icon size
 - Font size
 - Theme selection
-- Displaying the widget on the first/last monitor
+
+
 
