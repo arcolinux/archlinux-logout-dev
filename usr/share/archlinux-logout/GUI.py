@@ -271,11 +271,6 @@ def GUI(self, Gtk, GdkPixbuf, working_dir, os, Gdk, fn):
     lbl_font_size.set_halign(Gtk.Align.START)
     lbl_font_size.set_valign(Gtk.Align.END)
 
-    lbl_monitors = Gtk.Label()
-    lbl_monitors.set_markup("<b>Display:</b>")
-    lbl_monitors.set_halign(Gtk.Align.START)
-    lbl_monitors.set_valign(Gtk.Align.CENTER)
-
     # lbl11 = Gtk.Label(label="Wallpaper:")
     try:
         vals = self.opacity * 100
@@ -325,32 +320,6 @@ def GUI(self, Gtk, GdkPixbuf, working_dir, os, Gdk, fn):
             active = x
     self.themes.set_active(active)
 
-    vbox_monitors = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-    self.rb_monitor_first = Gtk.RadioButton(label="First monitor")
-    self.rb_monitor_first.set_name("rb_monitor_first")
-
-    vbox_monitors.pack_start(self.rb_monitor_first, True, True, 0)
-
-    # override self.monitors for testing ui
-    if self.monitors > 0:
-        if self.monitors > 1:
-            self.rb_monitor_last = Gtk.RadioButton(
-                label="Last monitor", group=self.rb_monitor_first
-            )
-            self.rb_monitor_last.set_name("rb_monitor_last")
-
-            vbox_monitors.pack_end(self.rb_monitor_last, True, True, 0)
-
-            if self.show_on_monitor == "first":
-                self.rb_monitor_first.set_active(True)
-
-            if self.show_on_monitor == "last":
-                self.rb_monitor_last.set_active(True)
-
-    else:
-        # this is an error should not reach here
-        print("[ERROR]: Failed to retrieve list of monitors")
-
     btn_save_settings = Gtk.Button(label="Save Settings")
     btn_save_settings.connect("clicked", self.on_save_clicked)
 
@@ -372,12 +341,6 @@ def GUI(self, Gtk, GdkPixbuf, working_dir, os, Gdk, fn):
     hbox_theme.pack_start(lbl_theme, False, False, 5)
     hbox_theme.pack_start(self.themes, False, False, 5)
 
-    # use a fixed container to align the monitor radio buttons with the label
-
-    fixed_container = Gtk.Fixed()
-    fixed_container.put(lbl_monitors, 5, 0)
-    fixed_container.put(vbox_monitors, 75, -1)
-
     hbox_buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
     hbox_buttons.pack_start(btn_save_settings, False, False, 5)
 
@@ -389,7 +352,6 @@ def GUI(self, Gtk, GdkPixbuf, working_dir, os, Gdk, fn):
     grid_settings.attach(hbox_icon_size, 0, 2, 1, 1)
     grid_settings.attach(hbox_font_size, 0, 3, 1, 1)
     grid_settings.attach(hbox_theme, 0, 4, 1, 1)
-    grid_settings.attach(fixed_container, 0, 5, 1, 1)
 
     grid_settings.attach(hbox_buttons, 0, 6, 1, 1)
 
