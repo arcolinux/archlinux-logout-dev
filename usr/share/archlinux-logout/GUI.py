@@ -211,7 +211,6 @@ def GUI(self, Gtk, GdkPixbuf, working_dir, os, Gdk, fn):
     self.lbl7.set_markup(f'<span size="{str(self.font)}000">Hibernate ({self.binds["hibernate"]})</span>')
     self.lbl7.set_name("lbl")
 
-
     vbox1.pack_start(self.Esh, False, False, 0)
     vbox1.pack_start(self.lbl1, False, False, 0)
     vbox2.pack_start(self.Er, False, False, 0)
